@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
         std::cout << "Auto time: " << auto_time << "ms" << std::endl;
         std::cout << "======================" << std::endl;
 
-        if (auto_time > manual_time * 2.5) {
+        if (auto_time > manual_time * 3) {
             printf("Auto-scheduler is much much slower than it should be.\n");
             return -1;
         }
@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
         std::cout << "Auto time: " << auto_time << "ms" << std::endl;
         std::cout << "======================" << std::endl;
 
-        if (auto_time > manual_time * 2.5) {
+        if (auto_time > manual_time * 3) {
             printf("Auto-scheduler is much much slower than it should be.\n");
             return -1;
         }
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
         std::cout << "Auto time: " << auto_time << "ms" << std::endl;
         std::cout << "======================" << std::endl;
 
-        if (auto_time > manual_time * 2.5) {
+        if (auto_time > manual_time * 3) {
             printf("Auto-scheduler is much much slower than it should be.\n");
             return -1;
         }

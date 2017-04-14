@@ -934,5 +934,44 @@ Function &Function::substitute_calls(const Function &orig, const Function &subst
     return substitute_calls(substitutions);
 }
 
+bool FunctionCompare::is_automatic_func_name(const string &name) const {
+    if ((name.size() < 2) || (name[0] != 'f') || !isdigit(name[1])) {
+        return false;
+    }
+    for (size_t i = 2; i < name.size(); ++i) {
+        if (!isdigit(name[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool FunctionCompare::operator()(const Function &f1, const Function &f2) const {
+    bool is_automatic_f1 = is_automatic_func_name(f1.name());
+    bool is_automatic_f2 = is_automatic_func_name(f2.name());
+    if (is_automatic_f1 && is_automatic_f2) {
+        return f1.name() < f2.name();
+    } else if (is_automatic_f1) {
+        return true;
+    } else if (is_automatic_f2) {
+        return false;
+    }
+
+    vector<string> v1 = split_string(f1.name(), "$");
+    internal_assert(v1.size() == 1 || v1.size() == 2);
+    vector<string> v2 = split_string(f2.name(), "$");
+    internal_assert(v2.size() == 1 || v2.size() == 2);
+
+    if (v1[0] != v2[0]) {
+        return v1[0] < v2[0];
+    }
+    if ((v1.size() == v2.size()) && (v1.size() == 2)) {
+        // Compare something like: f$1 and f$3
+        return v1[1] < v2[1];
+    }
+    // Compare something like: f and f$1
+    return v1.size() < v2.size();
+}
+
 }
 }
