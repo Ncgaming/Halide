@@ -175,6 +175,6 @@ inline Expr user_context_value() {
         Internal::Parameter(Handle(), false, 0, "__user_context", true));
 }
 
-}
+}  // namespace Halide
 
 #endif
