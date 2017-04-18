@@ -71,7 +71,7 @@ public:
         // Require 3 channels for output
         non_local_means.output_buffer().dim(2).set_bounds(0, 3);
 
-        Var tx("tx"), ty("ty"), xi, yi;
+        Var tx("tx"), ty("ty"), xi("xi"), yi("yi");
 
         if (auto_schedule) {
             // Provide estimates on the input image
@@ -92,7 +92,7 @@ public:
         } else if (get_target().has_gpu_feature()) {
             non_local_means.compute_root()
                 .reorder(c, x, y).unroll(c)
-                .gpu_tile(x, y, 16, 8);
+                .gpu_tile(x, y, xi, yi, 16, 8);
             d.compute_at(non_local_means_sum, s_dom.x)
                 .tile(x, y, xi, yi, 2, 2)
                 .unroll(xi)
@@ -102,7 +102,7 @@ public:
                 .unroll(x, 2).gpu_threads(x, y);
             blur_d.compute_at(non_local_means_sum, s_dom.x)
                 .gpu_threads(x, y);
-            non_local_means_sum.compute_at(non_local_means, Var::gpu_blocks())
+            non_local_means_sum.compute_at(non_local_means, x)
                 .gpu_threads(x, y)
                 .update()
                 .reorder(x, y, c, s_dom.x, s_dom.y)

@@ -4,7 +4,7 @@
 #include "nl_means.h"
 #include "nl_means_auto_schedule.h"
 
-#include "benchmark.h"
+#include "halide_benchmark.h"
 #include "HalideBuffer.h"
 #include "halide_image_io.h"
 
@@ -46,7 +46,12 @@ int main(int argc, char **argv) {
 
     save_image(output, argv[6]);
 
-    if (min_t_auto > min_t_manual * 1.5) {
+    const halide_filter_metadata_t *md = nl_means_metadata();
+    // Only compare the performance if target has non-gpu features.
+    if (!strstr(md->target, "cuda") &&
+        !strstr(md->target, "opencl") &&
+        !strstr(md->target, "metal") &&
+        (min_t_auto > min_t_manual * 2.5)) {
         printf("Auto-scheduler is much much slower than it should be.\n");
         return -1;
     }

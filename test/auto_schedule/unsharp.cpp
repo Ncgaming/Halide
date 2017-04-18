@@ -4,6 +4,8 @@
 using namespace Halide;
 using namespace Halide::Tools;
 
+const double PI= 3.14159265358979323846;
+
 double run_test(bool auto_schedule) {
     int W = 1920;
     int H = 1024;
@@ -22,7 +24,7 @@ double run_test(bool auto_schedule) {
 
     Var x, y, c;
     Func kernel("kernel");
-    kernel(x) = exp(-x*x/(2*sigma*sigma)) / (sqrtf(2*M_PI)*sigma);
+    kernel(x) = exp(-x*x/(2*sigma*sigma)) / (sqrtf(2*PI)*sigma);
 
     Func in_bounded = BoundaryConditions::repeat_edge(in);
 

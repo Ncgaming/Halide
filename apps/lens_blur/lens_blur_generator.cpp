@@ -174,38 +174,39 @@ public:
             Pipeline p(final);
             p.auto_schedule(get_target());
         } else if (get_target().has_gpu_feature()) {
+            Var xi("xi"), yi("yi"), zi("zi");
             cost_pyramid_push[0].compute_root()
                 .reorder(c, z, x, y)
                 .bound(c, 0, 2)
                 .unroll(c)
-                .gpu_tile(x, y, 16, 16);
-            cost.compute_at(cost_pyramid_push[0], Var::gpu_threads());
-            cost_confidence.compute_at(cost_pyramid_push[0], Var::gpu_threads());
+                .gpu_tile(x, y, xi, yi, 16, 16);
+            cost.compute_at(cost_pyramid_push[0], xi);
+            cost_confidence.compute_at(cost_pyramid_push[0], xi);
 
             for (int i = 1; i < 8; i++) {
                 cost_pyramid_push[i].compute_root()
-                    .gpu_tile(x, y, z, 8, 8, 8);
+                    .gpu_tile(x, y, z, xi, yi, zi, 8, 8, 8);
                 cost_pyramid_pull[i].compute_root()
-                    .gpu_tile(x, y, z, 8, 8, 8);
+                    .gpu_tile(x, y, z, xi, yi, zi, 8, 8, 8);
             }
 
             depth.compute_root()
-                .gpu_tile(x, y, 16, 16);
+                .gpu_tile(x, y, xi, yi, 16, 16);
             input_with_alpha.compute_root()
-                .reorder(c, x, y).unroll(c).gpu_tile(x, y, 16, 16);
+                .reorder(c, x, y).unroll(c).gpu_tile(x, y, xi, yi, 16, 16);
             worst_case_bokeh_radius_y
                 .compute_root()
-                .gpu_tile(x, y, 16, 16);
+                .gpu_tile(x, y, xi, yi, 16, 16);
             worst_case_bokeh_radius
                 .compute_root()
-                .gpu_tile(x, y, 16, 16);
+                .gpu_tile(x, y, xi, yi, 16, 16);
             final.compute_root()
                 .reorder(c, x, y)
                 .bound(c, 0, 3)
                 .unroll(c)
-                .gpu_tile(x, y, 16, 16);
+                .gpu_tile(x, y, xi, yi, 16, 16);
 
-            output.compute_at(final, Var::gpu_threads());
+            output.compute_at(final, xi);
             output.update().reorder(c, x, s).unroll(c);
             sample_weight.compute_at(output, x);
             sample_locations.compute_at(output, x);

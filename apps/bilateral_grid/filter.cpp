@@ -13,7 +13,6 @@ using namespace Halide::Tools;
 using namespace Halide::Runtime;
 
 int main(int argc, char **argv) {
-
     if (argc < 5) {
         printf("Usage: ./filter input.png output.png range_sigma timing_iterations\n"
                "e.g. ./filter input.png output.png 0.1 10\n");
@@ -45,10 +44,14 @@ int main(int argc, char **argv) {
 
     save_image(output, argv[2]);
 
-    if (min_t_auto > min_t_manual * 2) {
+    const halide_filter_metadata_t *md = bilateral_grid_metadata();
+    // Only compare the performance if target has non-gpu features.
+    if (!strstr(md->target, "cuda") &&
+        !strstr(md->target, "opencl") &&
+        !strstr(md->target, "metal") &&
+        (min_t_auto > min_t_manual * 2)) {
         printf("Auto-scheduler is much much slower than it should be.\n");
         return -1;
     }
-
     return 0;
 }

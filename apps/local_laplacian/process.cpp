@@ -42,7 +42,12 @@ int main(int argc, char **argv) {
 
     save_image(output, argv[6]);
 
-    if (best_auto > best_manual * 2) {
+    const halide_filter_metadata_t *md = local_laplacian_metadata();
+    // Only compare the performance if target has non-gpu features.
+    if (!strstr(md->target, "cuda") &&
+        !strstr(md->target, "opencl") &&
+        !strstr(md->target, "metal") &&
+        (best_auto > best_manual * 2)) {
         printf("Auto-scheduler is much much slower than it should be.\n");
         return -1;
     }
