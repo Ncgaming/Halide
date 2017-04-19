@@ -15,7 +15,7 @@ $(BIN)/lens_blur.a: $(BIN)/lens_blur_exec
 $(BIN)/lens_blur_auto_schedule.a: $(BIN)/lens_blur_exec
 	@-mkdir -p $(BIN)
 	$^ -o $(BIN)  target=$(HL_TARGET)
-	$^ -o $(BIN) -f lens_blur_auto_schedule target=$(HL_TARGET) auto_schedule=true
+	$^ -o $(BIN) -f lens_blur_auto_schedule target=$(HL_TARGET)-no_runtime auto_schedule=true
 
 $(BIN)/process: process.cpp $(BIN)/lens_blur.a $(BIN)/lens_blur_auto_schedule.a
 	@-mkdir -p $(BIN)

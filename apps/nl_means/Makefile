@@ -14,7 +14,7 @@ $(BIN)/nl_means.a: $(BIN)/nl_means_exec
 
 $(BIN)/nl_means_auto_schedule.a: $(BIN)/nl_means_exec
 	@-mkdir -p $(BIN)
-	$^ -o $(BIN) -f nl_means_auto_schedule target=$(HL_TARGET) auto_schedule=true
+	$^ -o $(BIN) -f nl_means_auto_schedule target=$(HL_TARGET)-no_runtime auto_schedule=true
 
 $(BIN)/process: process.cpp $(BIN)/nl_means.a $(BIN)/nl_means_auto_schedule.a
 	@-mkdir -p $(BIN)
